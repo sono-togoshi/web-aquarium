@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>魚を描こう</title>
+
+<style>
+
+body{
+    font-family:sans-serif;
+    text-align:center;
+    background:#eef8ff;
+}
+
+h1{
+    color:#0066aa;
+}
+
+#canvas{
+    border:2px solid #444;
+    background:white;
+    cursor:crosshair;
+}
+
+button{
+    font-size:18px;
+    padding:10px 20px;
+    margin:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>魚を描こう！</h1>
+
+<canvas id="canvas" width="400" height="200"></canvas>
+
+<br>
+
+<button onclick="clearCanvas()">全部消す</button>
+
+<button onclick="saveImage()">PNG保存</button>
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let drawing = false;
+
+/* マウス */
+
+canvas.addEventListener("mousedown", () => {
+    drawing = true;
+});
+
+canvas.addEventListener("mouseup", () => {
+    drawing = false;
+    ctx.beginPath();
+});
+
+canvas.addEventListener("mousemove", draw);
+
+function draw(event){
+
+    if(!drawing){
+        return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
+
+    ctx.lineTo(
+        event.clientX - rect.left,
+        event.clientY - rect.top
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        event.clientX - rect.left,
+        event.clientY - rect.top
+    );
+}
+
+/* スマホ
