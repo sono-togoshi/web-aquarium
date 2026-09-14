@@ -37,8 +37,20 @@ button{
 
 <h1>魚を描こう！</h1>
 
-<canvas id="canvas" width="400" height="200"></canvas>
+<div>
 
+<button onclick="setColor('black')">黒</button>
+<button onclick="setColor('red')">赤</button>
+<button onclick="setColor('blue')">青</button>
+<button onclick="setColor('green')">緑</button>
+<button onclick="setColor('yellow')">黄</button>
+<button onclick="setColor('purple')">紫</button>
+
+</div>
+
+<br>
+
+<canvas id="canvas" width="400" height="200"></canvas>
 <br><br>
 
 色：
@@ -57,6 +69,10 @@ button{
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+let drawing = false;
+
+let currentColor = "black";
 
 const colorPicker =
     document.getElementById("colorPicker");
@@ -136,6 +152,12 @@ function clearCanvas(){
 /* PNG保存 */
 
 function saveImage(){
+
+function setColor(color){
+
+    currentColor = color;
+
+}
 
     const link =
         document.createElement("a");
