@@ -39,6 +39,14 @@ button{
 
 <canvas id="canvas" width="400" height="200"></canvas>
 
+<br><br>
+
+色：
+
+<input type="color"
+       id="colorPicker"
+       value="#000000">
+
 <br>
 
 <button onclick="clearCanvas()">全部消す</button>
@@ -49,6 +57,9 @@ button{
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+const colorPicker =
+    document.getElementById("colorPicker");
 
 let drawing = false;
 
@@ -81,7 +92,8 @@ canvas.addEventListener("mousemove", function(e){
 
     ctx.lineWidth = 4;
     ctx.lineCap = "round";
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle =
+    colorPicker.value;
 
     ctx.lineTo(
         e.clientX - rect.left,
