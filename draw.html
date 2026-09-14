@@ -3,26 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>魚を描こう</title>
 
 <style>
 
 body{
-    font-family:sans-serif;
-    text-align:center;
     background:#eef8ff;
-    margin:20px;
+    text-align:center;
+    font-family:sans-serif;
 }
 
 h1{
     color:#0066aa;
 }
 
-#canvas{
-    border:2px solid #444;
+canvas{
+    border:2px solid #333;
     background:white;
-    cursor:crosshair;
-    touch-action:none;
 }
 
 button{
@@ -32,6 +30,7 @@ button{
 }
 
 </style>
+
 </head>
 
 <body>
@@ -53,7 +52,7 @@ const ctx = canvas.getContext("2d");
 
 let drawing = false;
 
-/* ---------- PC ---------- */
+/* マウス押下 */
 
 canvas.addEventListener("mousedown", function(e){
 
@@ -69,6 +68,8 @@ canvas.addEventListener("mousedown", function(e){
     );
 
 });
+
+/* マウス移動 */
 
 canvas.addEventListener("mousemove", function(e){
 
@@ -91,11 +92,15 @@ canvas.addEventListener("mousemove", function(e){
 
 });
 
+/* マウス離す */
+
 canvas.addEventListener("mouseup", function(){
 
     drawing = false;
 
 });
+
+/* キャンバス外へ */
 
 canvas.addEventListener("mouseleave", function(){
 
@@ -103,48 +108,36 @@ canvas.addEventListener("mouseleave", function(){
 
 });
 
-/* ---------- スマホ ---------- */
+/* 全部消す */
 
-canvas.addEventListener("touchstart", function(e){
+function clearCanvas(){
 
-    drawing = true;
-
-    const rect = canvas.getBoundingClientRect();
-
-    const touch = e.touches[0];
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        touch.clientX - rect.left,
-        touch.clientY - rect.top
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
     );
 
-});
+}
 
-canvas.addEventListener("touchmove", function(e){
+/* PNG保存 */
 
-    if(!drawing){
-        return;
-    }
+function saveImage(){
 
-    e.preventDefault();
+    const link =
+        document.createElement("a");
 
-    const rect = canvas.getBoundingClientRect();
+    link.download = "Fish.png";
 
-    const touch = e.touches[0];
+    link.href =
+        canvas.toDataURL("image/png");
 
-    ctx.lineWidth = 4;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "black";
+    link.click();
 
-    ctx.lineTo(
-        touch.clientX - rect.left,
-        touch.clientY - rect.top
-    );
+}
 
-    ctx.stroke();
+</script>
 
-});
-
-canvas.
+</body>
+</html>
