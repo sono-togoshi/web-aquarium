@@ -11,6 +11,7 @@ body{
     font-family:sans-serif;
     text-align:center;
     background:#eef8ff;
+    margin:20px;
 }
 
 h1{
@@ -21,6 +22,7 @@ h1{
     border:2px solid #444;
     background:white;
     cursor:crosshair;
+    touch-action:none;
 }
 
 button{
@@ -51,20 +53,24 @@ const ctx = canvas.getContext("2d");
 
 let drawing = false;
 
-/* マウス */
+/* ---------- PC ---------- */
 
-canvas.addEventListener("mousedown", () => {
+canvas.addEventListener("mousedown", function(e){
+
     drawing = true;
-});
 
-canvas.addEventListener("mouseup", () => {
-    drawing = false;
+    const rect = canvas.getBoundingClientRect();
+
     ctx.beginPath();
+
+    ctx.moveTo(
+        e.clientX - rect.left,
+        e.clientY - rect.top
+    );
+
 });
 
-canvas.addEventListener("mousemove", draw);
-
-function draw(event){
+canvas.addEventListener("mousemove", function(e){
 
     if(!drawing){
         return;
@@ -77,18 +83,68 @@ function draw(event){
     ctx.strokeStyle = "black";
 
     ctx.lineTo(
-        event.clientX - rect.left,
-        event.clientY - rect.top
+        e.clientX - rect.left,
+        e.clientY - rect.top
     );
 
     ctx.stroke();
 
+});
+
+canvas.addEventListener("mouseup", function(){
+
+    drawing = false;
+
+});
+
+canvas.addEventListener("mouseleave", function(){
+
+    drawing = false;
+
+});
+
+/* ---------- スマホ ---------- */
+
+canvas.addEventListener("touchstart", function(e){
+
+    drawing = true;
+
+    const rect = canvas.getBoundingClientRect();
+
+    const touch = e.touches[0];
+
     ctx.beginPath();
 
     ctx.moveTo(
-        event.clientX - rect.left,
-        event.clientY - rect.top
+        touch.clientX - rect.left,
+        touch.clientY - rect.top
     );
-}
 
-/* スマホ
+});
+
+canvas.addEventListener("touchmove", function(e){
+
+    if(!drawing){
+        return;
+    }
+
+    e.preventDefault();
+
+    const rect = canvas.getBoundingClientRect();
+
+    const touch = e.touches[0];
+
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
+
+    ctx.lineTo(
+        touch.clientX - rect.left,
+        touch.clientY - rect.top
+    );
+
+    ctx.stroke();
+
+});
+
+canvas.
