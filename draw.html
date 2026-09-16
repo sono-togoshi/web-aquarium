@@ -84,7 +84,12 @@ onclick="setColor('purple')"></button>
 全部消す
 </button>
 
+
 <script>
+
+let drawing = false;
+ 
+let currentColor = "black
 
 let currentSize = 5;
 
@@ -98,7 +103,7 @@ let drawing = false;
 
 let currentColor = "black";
 
-ctx.lineWidth = currentSize;
+let currentSize = 5;
 
 function setColor(color){
 
@@ -140,10 +145,7 @@ canvas.addEventListener("mousemove",function(e){
     ctx.strokeStyle =
     currentColor;
 
-    ctx.lineWidth =
-    currentSize;
-
-    ctx.lineCap =
+        ctx.lineCap =
     "round";
 
     ctx.lineTo(
