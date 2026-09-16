@@ -86,6 +86,8 @@ onclick="setColor('purple')"></button>
 
 <script>
 
+let currentSize = 5;
+
 const canvas =
 document.getElementById("canvas");
 
@@ -138,7 +140,11 @@ canvas.addEventListener("mousemove",function(e){
     ctx.strokeStyle =
     currentColor;
 
-    ctx.lineWidth = 4;
+    ctx.lineWidth =
+    currentSize;
+
+    ctx.lineCap =
+    "round";
 
     ctx.lineTo(
         e.clientX - rect.left,
@@ -147,6 +153,7 @@ canvas.addEventListener("mousemove",function(e){
 
     ctx.stroke();
 
+});
 });
 
 canvas.addEventListener("mouseup",function(){
