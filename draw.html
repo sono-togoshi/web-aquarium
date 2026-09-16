@@ -56,8 +56,21 @@ onclick="setColor('green')"></button>
 style="background:purple"
 onclick="setColor('purple')"></button>
 
-</div>
+<br><br>
 
+<button onclick="setSize(3)">
+細
+</button>
+
+<button onclick="setSize(8)">
+中
+</button>
+
+<button onclick="setSize(14)">
+太
+</button>
+
+</div>
 <br><br>
 
 <canvas id="canvas"
@@ -83,9 +96,17 @@ let drawing = false;
 
 let currentColor = "black";
 
+ctx.lineWidth = currentSize;
+
 function setColor(color){
 
     currentColor = color;
+
+}
+
+function setSize(size){
+
+    currentSize = size;
 
 }
 
