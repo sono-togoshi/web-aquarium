@@ -145,7 +145,10 @@ canvas.addEventListener("mousemove",function(e){
     ctx.strokeStyle =
     currentColor;
 
-        ctx.lineCap =
+    ctx.lineWidth =
+    currentSize;
+
+    ctx.lineCap =
     "round";
 
     ctx.lineTo(
@@ -155,7 +158,6 @@ canvas.addEventListener("mousemove",function(e){
 
     ctx.stroke();
 
-});
 });
 
 canvas.addEventListener("mouseup",function(){
