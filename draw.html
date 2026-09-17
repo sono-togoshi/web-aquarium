@@ -73,7 +73,7 @@ onclick="setColor('purple')"></button>
 <button onclick="setEraser()">
 消しゴム
 </button>
-    
+
 </div>
 <br><br>
 
@@ -88,6 +88,9 @@ onclick="setColor('purple')"></button>
 全部消す
 </button>
 
+<button onclick="saveImage()">
+PNG保存
+</button>
 
 <script>
 
@@ -120,7 +123,6 @@ function setEraser(){
     currentColor = "white";
 
 }
-
 canvas.addEventListener("mousedown",function(e){
 
     drawing = true;
@@ -186,6 +188,17 @@ function clearCanvas(){
     );
 
 }
+
+function saveImage(){
+
+    const link =
+    document.createElement("a");
+
+    link.download =
+    "Fish.png";
+
+    link.href =
+    canvas.toDataURL("image/png");
 
 </script>
 
