@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -74,11 +75,8 @@ onclick="setColor('purple')"></button>
 消しゴム
 </button>
 
-<button onclick="saveImage()">
-PNG保存
-</button>
-
 </div>
+
 <br><br>
 
 <canvas id="canvas"
@@ -92,9 +90,10 @@ PNG保存
 全部消す
 </button>
 
-<button onclick="saveImage()">
-PNG保存
+<button onclick="savePNG()">
+背景透過PNG保存
 </button>
+
 
 <script>
 
@@ -110,24 +109,37 @@ let currentColor = "black";
 
 let currentSize = 5;
 
+
+/* 色を選択 */
 function setColor(color){
 
     currentColor = color;
 
+    // 通常の描画モードに戻す
+    ctx.globalCompositeOperation = "source-over";
+
 }
 
+
+/* 線の太さを設定 */
 function setSize(size){
 
     currentSize = size;
 
 }
 
+
+/* 消しゴム */
 function setEraser(){
 
-    currentColor = "white";
+    // 描いた部分を透明にする
+    ctx.globalCompositeOperation = "destination-out";
 
 }
-canvas.addEventListener("mousedown",function(e){
+
+
+/* マウスを押した */
+canvas.addEventListener("mousedown", function(e){
 
     drawing = true;
 
@@ -143,7 +155,9 @@ canvas.addEventListener("mousedown",function(e){
 
 });
 
-canvas.addEventListener("mousemove",function(e){
+
+/* マウスを動かした */
+canvas.addEventListener("mousemove", function(e){
 
     if(!drawing){
         return;
@@ -170,18 +184,24 @@ canvas.addEventListener("mousemove",function(e){
 
 });
 
-canvas.addEventListener("mouseup",function(){
+
+/* マウスを離した */
+canvas.addEventListener("mouseup", function(){
 
     drawing = false;
 
 });
 
-canvas.addEventListener("mouseleave",function(){
+
+/* canvasの外に出た */
+canvas.addEventListener("mouseleave", function(){
 
     drawing = false;
 
 });
 
+
+/* 全部消す */
 function clearCanvas(){
 
     ctx.clearRect(
@@ -193,20 +213,29 @@ function clearCanvas(){
 
 }
 
-function saveImage(){
 
+/* PNGとして保存 */
+function savePNG(){
+
+    // canvasそのものをPNGに変換
+    // サイズは400×200のまま
+    // 背景は透明のまま保存される
     const link =
     document.createElement("a");
 
     link.download =
-    "Fish.png";
+    "drawing.png";
 
     link.href =
     canvas.toDataURL("image/png");
+
     link.click();
 
 }
+
 </script>
 
 </body>
 </html>
+```
+
