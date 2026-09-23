@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WEB水族館</title>
 
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 
 body{
@@ -69,6 +72,23 @@ body{
 
 <script>
 
+/* =========================
+   Supabase接続
+   ========================= */
+
+const SUPABASE_URL = "https://yapohmzbgojtaygfceel.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_LzzA7XlGG4Q6qGQDpf8_mA_FZepVODX";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+
+/* =========================
+   水槽
+   ========================= */
+
 const aquarium = document.getElementById("aquarium");
 
 const fishes = [];
@@ -76,95 +96,164 @@ const fishes = [];
 const aquariumWidth = 1000;
 const aquariumHeight = 500;
 
-/* 魚25匹作成 */
 
-for(let i = 0; i < 25; i++){
+/* =========================
+   Supabaseから魚を読み込む
+   ========================= */
 
-    const fish = document.createElement("img");
+async function loadFish(){
 
-    fish.src = "fish/Fish" + i + ".png";
+    const { data, error } = await supabaseClient
+        .from("fishes")
+        .select("slot,image_path")
+        .order("slot", { ascending:true });
 
-    fish.className = "fish";
+    if(error){
 
-    fish.style.width = (60 + Math.random()*120) + "px";
+        console.error("魚の読み込みに失敗しました:", error);
 
-    aquarium.appendChild(fish);
+        return;
+    }
 
-    fishes.push({
+    console.log("Supabaseから読み込んだ魚:", data);
 
-    el: fish,
 
-    x: Math.random()*900,
+    data.forEach(function(row){
 
-    y: 50 + Math.random()*300,
+        const fish = document.createElement("img");
 
-    vx: (Math.random()*2 + 1) *
-        (Math.random() > 0.5 ? 1 : -1),
+        /* Storageの画像URLを作る */
 
-    vy: (Math.random()*1.2 - 0.6),
+        const imageUrl =
+            SUPABASE_URL +
+            "/storage/v1/object/public/fish-images/" +
+            row.image_path
+                .split("/")
+                .map(encodeURIComponent)
+                .join("/");
 
-    wiggleOffset: Math.random() * 1000,
+        fish.src = imageUrl;
 
-    wiggleSize: 2 + Math.random() * 4
+        fish.className = "fish";
 
-});
+        fish.style.width =
+            (60 + Math.random()*120) + "px";
+
+        aquarium.appendChild(fish);
+
+
+        fishes.push({
+
+            el:fish,
+
+            x:Math.random()*900,
+
+            y:50 + Math.random()*300,
+
+            vx:(Math.random()*2 + 1) *
+                (Math.random() > 0.5 ? 1 : -1),
+
+            vy:(Math.random()*1.2 - 0.6),
+
+            wiggleOffset:Math.random()*1000,
+
+            wiggleSize:2 + Math.random()*4
+
+        });
+
+    });
+
+
+    /* 魚を読み込んでからアニメーション開始 */
+
+    animateFish();
+
 }
 
-/* 魚アニメーション */
+
+/* =========================
+   魚アニメーション
+   ========================= */
 
 function animateFish(){
 
     fishes.forEach(function(f){
 
         f.x += f.vx;
+
         f.y += f.vy;
 
         const w = f.el.offsetWidth;
 
-        if(f.x + w > aquariumWidth){
-    f.x = aquariumWidth - w;
-    f.vx *= -1;
-}
 
-if(f.x < 0){
-    f.x = 0;
-    f.vx *= -1;
-}
+        if(f.x + w > aquariumWidth){
+
+            f.x = aquariumWidth - w;
+
+            f.vx *= -1;
+
+        }
+
+
+        if(f.x < 0){
+
+            f.x = 0;
+
+            f.vx *= -1;
+
+        }
+
 
         if(f.y < 20){
+
             f.vy *= -1;
+
         }
+
 
         if(f.y > aquariumHeight - 100){
+
             f.vy *= -1;
+
         }
 
+
         f.el.style.left = f.x + "px";
+
         f.el.style.top = f.y + "px";
 
-        const wiggle =
-    Math.sin(
-        Date.now() / 150 +
-        f.x / 50 +
-        f.wiggleOffset
-    ) * f.wiggleSize;
 
-if(f.vx < 0){
-    f.el.style.transform =
-        `scaleX(-1) rotate(${wiggle}deg)`;
-}else{
-    f.el.style.transform =
-        `rotate(${wiggle}deg)`;
-}
+        const wiggle =
+            Math.sin(
+                Date.now() / 150 +
+                f.x / 50 +
+                f.wiggleOffset
+            ) * f.wiggleSize;
+
+
+        if(f.vx < 0){
+
+            f.el.style.transform =
+                `scaleX(-1) rotate(${wiggle}deg)`;
+
+        }else{
+
+            f.el.style.transform =
+                `rotate(${wiggle}deg)`;
+
+        }
 
     });
 
+
     requestAnimationFrame(animateFish);
+
 }
 
-animateFish();
 
-/* 泡 */
+/* =========================
+   泡
+   ========================= */
 
 function createBubble(){
 
@@ -175,37 +264,35 @@ function createBubble(){
     const size = 5 + Math.random()*15;
 
     bubble.style.width = size + "px";
+
     bubble.style.height = size + "px";
 
-    bubble.style.left = (50 + Math.random()*900) + "px";
+    bubble.style.left =
+        (50 + Math.random()*900) + "px";
 
     bubble.style.animationDuration =
         (4 + Math.random()*4) + "s";
 
     aquarium.appendChild(bubble);
 
+
     setTimeout(function(){
 
         bubble.remove();
 
     },8000);
+
 }
+
 
 setInterval(createBubble,500);
 
-setInterval(() => {
 
-    fishes.forEach((f, index) => {
+/* =========================
+   開始
+   ========================= */
 
-        f.el.src =
-            "fish/Fish" +
-            index +
-            ".png?t=" +
-            Date.now();
-
-    });
-
-}, 5000);
+loadFish();
 
 </script>
 
