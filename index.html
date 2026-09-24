@@ -195,7 +195,7 @@ function animateFish(){
         }
 
 
-        if(f.x > 0){
+        if(f.x < 0){
 
             f.x = 0;
 
@@ -231,7 +231,7 @@ function animateFish(){
             ) * f.wiggleSize;
 
 
-        if(f.vx < 0){
+        if(f.vx > 0){
 
             f.el.style.transform =
                 `scaleX(-1) rotate(${wiggle}deg)`;
