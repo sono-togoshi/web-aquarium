@@ -121,6 +121,7 @@ const aquariumHeight = 500;
    Supabaseから魚を読み込む
    ========================= */
 
+
 async function loadFish(){
 
     const { data, error } = await supabaseClient
@@ -129,20 +130,36 @@ async function loadFish(){
         .order("slot", { ascending:true });
 
     if(error){
-
         console.error("魚の読み込みに失敗しました:", error);
-
         return;
     }
 
-    console.log("Supabaseから読み込んだ魚:", data);
+    // 現在表示中の魚をスロットごとに整理
+    const oldBySlot = new Map(
+        fishes.map(f => [f.slot, f])
+    );
 
+    const updatedFishes = [];
 
     data.forEach(function(row){
 
-        const fish = document.createElement("img");
+        const oldFish = oldBySlot.get(row.slot);
 
-        /* Storageの画像URLを作る */
+        // 同じ魚なら位置や動きを維持
+        if(oldFish && oldFish.image_path === row.image_path){
+            updatedFishes.push(oldFish);
+            oldBySlot.delete(row.slot);
+            return;
+        }
+
+        // 入れ替わった魚は古い画像を取り除く
+        if(oldFish){
+            oldFish.el.remove();
+            oldBySlot.delete(row.slot);
+        }
+
+        // 新しい魚を作る
+        const fish = document.createElement("img");
 
         const imageUrl =
             SUPABASE_URL +
@@ -153,7 +170,6 @@ async function loadFish(){
                 .join("/");
 
         fish.src = imageUrl;
-
         fish.className = "fish";
 
         fish.style.width =
@@ -161,27 +177,34 @@ async function loadFish(){
 
         aquarium.appendChild(fish);
 
+        updatedFishes.push({
 
-        fishes.push({
+            el: fish,
+            slot: row.slot,
+            image_path: row.image_path,
 
-            el:fish,
+            x: Math.random()*900,
+            y: 50 + Math.random()*300,
 
-            x:Math.random()*900,
-
-            y:50 + Math.random()*300,
-
-            vx:(Math.random()*1.4 + 0.7) *
+            vx: (Math.random()*1.4 + 0.7) *
                 (Math.random() > 0.5 ? 1 : -1),
 
-            vy:(Math.random()*0.8 - 0.4),
+            vy: Math.random()*0.8 - 0.4,
 
-            wiggleOffset:Math.random()*1000,
-
-            wiggleSize:2 + Math.random()*4
-
+            wiggleOffset: Math.random()*1000,
+            wiggleSize: 2 + Math.random()*4
         });
-
     });
+
+    // データベースから消えた魚を画面から取り除く
+    oldBySlot.forEach(function(f){
+        f.el.remove();
+    });
+
+    // 現在の魚一覧を更新
+    fishes.splice(0, fishes.length, ...updatedFishes);
+
+}
 
 
     /* 魚を読み込んでからアニメーション開始 */
@@ -313,6 +336,8 @@ setInterval(createBubble,500);
    ========================= */
 
 loadFish();
+animateFish();
+setInterval(loadFish, 10000);
 
 </script>
 
