@@ -426,6 +426,26 @@ setInterval(loadFish, 10000);
     </a>
 </nav>
 
+<audio id="bgm" loop>
+    <source src="FishBGM.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicButton">♫ ▶</button>
+
+<script>
+const bgm = document.getElementById("bgm");
+const musicButton = document.getElementById("musicButton");
+
+musicButton.addEventListener("click", function() {
+    if (bgm.paused) {
+        bgm.play();
+        musicButton.textContent = "♫ Ⅱ";
+    } else {
+        bgm.pause();
+        musicButton.textContent = "♫ ▶";
+    }
+});
+</script>
 
 </body>
 </html>
